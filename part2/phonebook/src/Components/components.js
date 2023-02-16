@@ -1,0 +1,51 @@
+import { useState } from 'react';
+const Filter=(props)=>{
+    return (
+      <div>
+         <div>
+            filter shown with: 
+            <input name="newName" value={props.filtervalue} onChange={props.filterfn}
+          />
+          </div>
+      </div>
+    );
+  }
+  
+  
+  const Persons=(arr)=>{ 
+    let ps=arr.arr?arr.arr:arr.all;
+    var renderedOutput = ps.map(item => <div key={item.id}> {item.name} {item.number} &nbsp;
+    <button id={item.id} onClick={(evt)=>{
+      arr.deletefn(evt.target.id)}}>Delete</button></div>)
+    return (
+      <div>
+        {renderedOutput}
+      </div>
+    );
+  }
+  
+  const PersonForm=(props)=>{
+    const [newName, setNewName] = useState('')
+    const [newNumber, setNewNumber] = useState('')
+      return (
+        <form onSubmit={(evt)=>{
+          evt.preventDefault();
+          props.submitfn(newName,newNumber);
+          setNewName('');setNewNumber('');
+        }}  >
+          <div>
+            name: <input name="newName" value={newName} onChange={(event) =>
+            setNewName(event.target.value)
+          }/>
+          <div>number: <input name="newNumber" value={newNumber}  onChange={(event) =>
+            setNewNumber(event.target.value) } /></div>
+          </div>
+          <div>
+            <button type="submit">add</button>
+          </div>
+        </form>
+      );
+    }
+
+    
+    export { Filter,Persons,PersonForm};
