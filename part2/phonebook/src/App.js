@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios'
-import { Filter, Persons, PersonForm } from './Components/components.js';
-import personService from './API/api.js'
+import { Filter, Persons, PersonForm,Notification } from './Components/components.js';
+import personService from './API/api.js';
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [filtered, setfiltered] = useState(persons)
   const [filtervalue, setfiltervalue] = useState('')
-
+  const [errorMessage, setErrorMessage] = useState('')
   useEffect(() => {
     personService.getAll().then(resp => {
       setPersons(resp)
@@ -27,7 +27,10 @@ const App = () => {
         .then(resp=>{
           setPersons(persons.map(p=>p.id!=matching.id?p:resp));
           setfiltered(persons.map(p=>p.id!=matching.id?p:resp));
-          alert(`${personName} was successfully updated`)
+          //alert(`${personName} was successfully updated`)
+          setErrorMessage(`${personName} was successfully updated`);
+        }).catch((error)=>{
+          setErrorMessage(`${personName} could not be updated. Please retry.`);
         })
         
        
@@ -43,6 +46,8 @@ const App = () => {
         .then(response => {
           setPersons(persons.concat(response));
           setfiltered(persons.concat(response));
+        }).catch((error)=>{
+          setErrorMessage(`${newName} could not be created. Please retry.`);
         })
 
     }
@@ -60,16 +65,23 @@ const App = () => {
     const personName = filteredPerson[0].name;
     const personId = filteredPerson[0].id;
     if (window.confirm(`Delete ${personName} ?`)) {
-      personService.deleter(personId)
+      personService.deleter(personId).then(()=>{
+        setPersons(persons.filter(person => person.id !== personId));
+        setfiltered(persons.filter(person => person.id !== personId));
+        //alert(`${personName} was successfully deleted`)
+        setErrorMessage(`${personName} was successfully deleted`);
+      }).catch((error)=>{
+        setErrorMessage(`Error occured while deleting ${personName}.Please retry.`);
+      })
 
-      setPersons(persons.filter(person => person.id !== personId));
-      setfiltered(persons.filter(person => person.id !== personId));
-      alert(`${personName} was successfully deleted`)
+     
     }
   }
 
   return (
     <div>
+      <h2>Phonebook</h2>
+      <Notification message={errorMessage}/>
       <h2>Filter</h2>
       <Filter filterfn={filterfn} filtervalue={filtervalue} />
       <h2>Phonebook</h2>

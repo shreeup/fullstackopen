@@ -1,4 +1,6 @@
 import { useState } from 'react';
+
+import { Filter, Persons, PersonForm,Notification } from './Components/components.js';
 const Filter=(props)=>{
     return (
       <div>
@@ -47,5 +49,41 @@ const Filter=(props)=>{
       );
     }
 
+    const errorStyle = {
+      color: 'red',
+      background: 'lightgrey',
+      font_size: 20,
+      border_style: 'solid',
+      border_radius: 5,
+      padding: 10,
+      margin_bottom: 10
+    }
+
+    const successtyle = {
+      color: 'green',
+      background: 'lightgreen',
+      font_size: 20,
+      border_style: 'solid',
+      border_radius: 5,
+      padding: 10,
+      margin_bottom: 10
+    }
+
+    const Notification = ({ message }) => {
+      if (!message) {
+        return null
+      }
     
-    export { Filter,Persons,PersonForm};
+      return (
+        message.indexOf("retry")>-1?
+        (<div className='error' style={errorStyle}>
+          {message}
+        </div>):
+         (<div className='success' style={successtyle}>
+            {message}
+          </div>)
+      )
+    }
+
+    
+    export { Filter,Persons,PersonForm,Notification};
