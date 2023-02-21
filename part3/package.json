@@ -1,0 +1,34 @@
+{
+  "name": "backend",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shreeup/fullstackopen.git"
+  },
+  "keywords": [
+    "node",
+    "backend"
+  ],
+  "author": "shree",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shreeup/fullstackopen/issues"
+  },
+  "homepage": "https://github.com/shreeup/fullstackopen#readme",
+  "dependencies": {
+    "axios": "^1.3.3",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
