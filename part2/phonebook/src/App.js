@@ -20,13 +20,13 @@ const App = () => {
     let matching=persons.find(e => e.name == newName)
     if (matching){
       const personName = matching.name;
-      const personId = matching.id;
+      const personId = matching._id;
       if (window.confirm(`${newName} is already added to phonebook,
       replace the old number with new one?`)) {
         personService.update(personId,{...matching,number:newNumber})
         .then(resp=>{
-          setPersons(persons.map(p=>p.id!=matching.id?p:resp));
-          setfiltered(persons.map(p=>p.id!=matching.id?p:resp));
+          setPersons(persons.map(p=>p._id!=matching._id?p:resp));
+          setfiltered(persons.map(p=>p._id!=matching._id?p:resp));
           //alert(`${personName} was successfully updated`)
           setErrorMessage(`${personName} was successfully updated`);
         }).catch((error)=>{
@@ -37,11 +37,10 @@ const App = () => {
       }
     }
     else {
-
       personService
         .create({
           name: newName, number: newNumber,
-          id: Math.max(...persons.map(o => o.id) + 1)
+          id: Math.max(...persons.map(o => o._id) + 1)
         })
         .then(response => {
           setPersons(persons.concat(response));
@@ -61,14 +60,13 @@ const App = () => {
   }
 
   const deletefn = (id) => {
-    const filteredPerson = persons.filter(person => person.id == id);
+    const filteredPerson = persons.filter(person => person._id == id);
     const personName = filteredPerson[0].name;
-    const personId = filteredPerson[0].id;
+    const personId = filteredPerson[0]._id;
     if (window.confirm(`Delete ${personName} ?`)) {
       personService.deleter(personId).then(()=>{
-        setPersons(persons.filter(person => person.id !== personId));
-        setfiltered(persons.filter(person => person.id !== personId));
-        //alert(`${personName} was successfully deleted`)
+        setPersons(persons.filter(person => person._id !== personId));
+        setfiltered(persons.filter(person => person._id !== personId));
         setErrorMessage(`${personName} was successfully deleted`);
       }).catch((error)=>{
         setErrorMessage(`Error occured while deleting ${personName}.Please retry.`);

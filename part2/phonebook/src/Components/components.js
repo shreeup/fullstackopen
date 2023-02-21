@@ -16,8 +16,8 @@ const Filter=(props)=>{
   
   const Persons=(arr)=>{ 
     let ps=arr.arr?arr.arr:arr.all;
-    var renderedOutput = ps.map(item => <div key={item.id}> {item.name} {item.number} &nbsp;
-    <button id={item.id} onClick={(evt)=>{
+    var renderedOutput = ps.map(item => <div key={item._id}> {item.name} {item.number} &nbsp;
+    <button id={item._id} onClick={(evt)=>{
       arr.deletefn(evt.target.id)}}>Delete</button></div>)
     return (
       <div>
