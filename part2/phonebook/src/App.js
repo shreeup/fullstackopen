@@ -46,7 +46,8 @@ const App = () => {
           setPersons(persons.concat(response));
           setfiltered(persons.concat(response));
         }).catch((error)=>{
-          setErrorMessage(`${newName} could not be created. Please retry.`);
+          setErrorMessage(`${newName} could not be created. Please retry.
+           ${error.response.data.error}`);
         })
 
     }
