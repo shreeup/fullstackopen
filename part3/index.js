@@ -16,90 +16,85 @@ const requestLogger = (request, response, next) => {
     console.log('Body:  ', request.body)
     console.log('---')
     next()
-  }
-  app.use(requestLogger)
-  
+}
+app.use(requestLogger)
 
-  const unknownEndpoint = (request, response) => {
+
+const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
-  }
+}
 
 
 
-  const errorHandler = (error, request, response, next) => {
+const errorHandler = (error, request, response, next) => {
     console.error(error.message)
-  
+
     if (error.name === 'CastError') {
-      return response.status(400).send({ error: 'malformatted id' })
+        return response.status(400).send({ error: 'malformatted id' })
     } else if (error.name === 'ValidationError') {
         return response.status(400).json({ error: error.message })
-    } 
-  
+    }
+
     next(error)
-  }
+}
 
-  app.use(errorHandler)
+app.use(errorHandler)
 
- 
+
 
 
 app.get('/', (req, res) => {
     res.send('<h1>Hello World!</h1>')
-  })
-  
-  app.get('/api/persons', (req, res) => {
+})
+
+app.get('/api/persons', (req, res) => {
     //res.json(persons)
     PhoneBookEntry.find({}).then(result => {
         res.json(result)
-      })
-  })
+    })
+})
 
-  app.get('/info', (req, res) => {
-    if(PhoneBookEntry.find_one({name: person["name"]})){
-        return response.status(400).json({ 
-            error: 'name must be unique' 
-          })
-        }
-    res.send('<p>Phonebook has '+`${persons.length}`+' people.<br/>'+`${new Date()}`+'</p>')
-  })
-  
-  
-  
-  app.post('/api/persons', (request, response,next) => {
+app.get('/info', (req, res) => {
+    res.send('<p>Phonebook has ' + `${PhoneBookEntry.find().count()}` + ' people.<br/>' + `${new Date()}` + '</p>')
+})
+
+
+
+app.post('/api/persons', (request, response, next) => {
     const body = request.body
     if (!body.name) {
-      return response.status(400).json({ 
-        error: 'name missing' 
-      })
+        return response.status(400).json({
+            error: 'name missing'
+        })
     }
-  
+
     const person = {
-      name: body.name,
-      number: body.number || false
+        name: body.name,
+        number: body.number || false
     }
-    if(PhoneBookEntry.find({name: person["name"]}).count() > 0){
-    return response.status(400).json({ 
-        error: 'name must be unique' 
-      })
+    if (PhoneBookEntry.find({ name: person["name"] }).count() > 0) {
+        return response.status(400).json({
+            error: 'name must be unique'
+        })
     }
-  
-    
-      const entry = new PhoneBookEntry({
+
+
+    const entry = new PhoneBookEntry({
         name: person["name"],
         number: person["number"],
-        })
-        console.log("entry "+JSON.stringify(entry));
-        entry.save().then(result => {
-            console.log('Entry saved!')
-            if (result) {
-                response.json(result)
-            } else {
-                response.status(500).end()
-            }
-        }).catch(error => next(error))
-  })
-  
-  app.get('/api/persons/:id', (request, response,next) => {
+    })
+    console.log("entry " + JSON.stringify(entry));
+    entry.save().then(result => {
+        console.log('Entry saved!')
+        if (result) {
+            response.json(result)
+        } else {
+            response.status(500).end()
+        }
+    }).catch(error => next(error))
+})
+
+app.get('/api/persons/:id', (request, response, next) => {
     const id = request.params.id;
     // const note = persons.find(note => note.id == id)
 
@@ -109,46 +104,46 @@ app.get('/', (req, res) => {
     //   response.status(404).end()
     // }
     PhoneBookEntry.findById(id).then(result => {
-       // response.json(result)
-       if (result) {
+        // response.json(result)
+        if (result) {
             response.json(result)
         } else {
             response.status(404).end()
         }
-      })
-      .catch(error => next(error))
+    })
+        .catch(error => next(error))
     //response.json(note)
-  })
-  
-  app.delete('/api/persons/:id', (request, response,next) => {
+})
+
+app.delete('/api/persons/:id', (request, response, next) => {
     const id = request.params.id;
     //console.log("indel "+request.params.id)
     // persons = persons.filter(note => note.id !== id)
     // response.status(204).end()
-     PhoneBookEntry.findByIdAndDelete(request.params.id)
-     .then(result => {
-       response.status(204).end()
-     })
-     .catch(error => next(error))
-    
-  })
-  
-  app.put('/api/persons/:id', (request, response, next) => {
-   
+    PhoneBookEntry.findByIdAndDelete(id)
+        .then(() => {
+            response.status(204).end()
+        })
+        .catch(error => next(error))
+
+})
+
+app.put('/api/persons/:id', (request, response, next) => {
+
     const { name, number } = request.body
-  
-    PhoneBookEntry.findByIdAndUpdate(request.params.id, { name, number }, 
-        { new: true,runValidators: true, context: 'query' })
-      .then(updatedEntry => {
-        response.json(updatedEntry)
-      })
-      .catch(error => next(error))
-  })
+
+    PhoneBookEntry.findByIdAndUpdate(request.params.id, { name, number },
+        { new: true, runValidators: true, context: 'query' })
+        .then(updatedEntry => {
+            response.json(updatedEntry)
+        })
+        .catch(error => next(error))
+})
 
 
-  app.use(unknownEndpoint)
-  const PORT = process.env.PORT || 3001
-  app.listen(PORT, () => {
+app.use(unknownEndpoint)
+const PORT = process.env.PORT || 3001
+app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
-  })
+})
 
