@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Filter, Persons, PersonForm,Notification } from './Components/components.js';
+
 const Filter=(props)=>{
     return (
       <div>
