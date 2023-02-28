@@ -22,14 +22,14 @@ blogsRouter.get('/:id', (request, response, next) => {
 })
 
 blogsRouter.post('/', (request, response, next) => {
-    debugger;
-    console.log("post hit")
-    console.log(JSON.stringify(request));
+    
+   
     const blog = new Blog(request.body)
 
     blog
       .save()
       .then(result => {
+        console.log("post hit "+result)
         response.status(201).json(result)
       })
 })
@@ -43,7 +43,13 @@ blogsRouter.delete('/:id', (request, response, next) => {
 })
 
 blogsRouter.put('/:id', (request, response, next) => {
-    const blog = new Blog(request.body)
+  const body=request.body;
+    const blog = {
+      title: body.title,
+      author: body.author,
+      url: body.url,
+      likes: body.likes,
+    }
   Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
     .then(updatedBlog => {
       response.json(updatedBlog)
